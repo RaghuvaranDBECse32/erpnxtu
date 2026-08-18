@@ -1,0 +1,10 @@
+{
+  "name": "erpnxtu-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix erpnext-leave-management run dev",
+    "build": "npm --prefix erpnext-leave-management/client install && npm --prefix erpnext-leave-management/client run build",
+    "install:all": "npm --prefix erpnext-leave-management run install:all"
+  }
+}

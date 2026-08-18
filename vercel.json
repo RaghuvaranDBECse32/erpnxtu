@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd erpnext-leave-management/client && npm install && npm run build",
+  "outputDirectory": "erpnext-leave-management/client/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
