@@ -1,0 +1,16 @@
+{
+  "name": "erpnext-leave-management",
+  "version": "1.0.0",
+  "description": "ERPNext Leave Management Portal – MERN monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "npx concurrently \"npm run dev:server\" \"npm run dev:client\" --names \"API,UI\" --prefix-colors \"cyan,magenta\"",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "install:all": "npm install && npm --prefix client install && npm --prefix server install",
+    "build:client": "npm --prefix client run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
