@@ -1,7 +1,7 @@
 {
-  "name": "erpnext-leave-client",
+  "name": "recoverai-client",
   "version": "1.0.0",
-  "description": "React frontend for ERPNext Leave Management Portal",
+  "description": "Frontend for RecoverAI — AI Revenue Recovery Agent",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,9 +12,7 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
-    "erpnext-leave-management": "file:..",
-    "erpnxtu-root": "file:../..",
-    "lucide-react": "^1.31.0",
+    "lucide-react": "^0.395.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1"

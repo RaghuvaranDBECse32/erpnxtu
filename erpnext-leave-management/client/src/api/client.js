@@ -1,36 +1,48 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 15000,
+const api = axios.create({
+  baseURL: API_BASE,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 15000,
 });
 
-export const getHealth = async () => {
-  const res = await apiClient.get("/health");
-  return res.data;
-};
+api.interceptors.response.use(
+  (res) => res.data,
+  (err) => {
+    const errorMsg =
+      err.response?.data?.message || err.message || "Network request failed";
+    return Promise.reject(new Error(errorMsg));
+  }
+);
 
-export const getDashboard = async () => {
-  const res = await apiClient.get("/dashboard");
-  return res.data.data;
-};
+// Health
+export const checkHealth = () => api.get("/api/health");
 
-export const getEmployees = async () => {
-  const res = await apiClient.get("/employees");
-  return res.data.data;
-};
+// Payments
+export const fetchPayments = (params = {}) => api.get("/api/payments", { params });
+export const fetchPaymentById = (id) => api.get(`/api/payments/${id}`);
+export const createPaymentOrder = (payload) => api.post("/api/payments/create-order", payload);
+export const verifyPayment = (payload) => api.post("/api/payments/verify", payload);
 
-export const getLeaves = async () => {
-  const res = await apiClient.get("/leaves");
-  return res.data.data;
-};
+// Recovery Agent
+export const analyzePayment = (id) => api.post(`/api/recovery/analyze/${id}`);
+export const executeRecovery = (id, payload = {}) =>
+  api.post(`/api/recovery/execute/${id}`, payload);
+export const fetchRecoveryCases = () => api.get("/api/recovery/cases");
 
-export const applyLeave = async (leaveData) => {
-  const res = await apiClient.post("/leaves", leaveData);
-  return res.data;
-};
+// Analytics
+export const fetchSummary = () => api.get("/api/analytics/summary");
+export const fetchFailures = () => api.get("/api/analytics/failures");
+export const fetchDailyMetrics = () => api.get("/api/analytics/daily");
+export const executeAnalyticsQuery = (query, mode = "auto") =>
+  api.post("/api/analytics/query", { query, mode });
+
+// Audit
+export const fetchAuditLogs = (payId = null) =>
+  payId ? api.get(`/api/audit/${payId}`) : api.get("/api/audit");
+
+export default api;

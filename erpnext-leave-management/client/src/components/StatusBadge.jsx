@@ -1,24 +1,25 @@
 import React from "react";
 
-export default function StatusBadge({ status }) {
-  const normalized = (status || "").toLowerCase();
-  
-  let badgeClass = "badge-pending";
-  let label = status || "Pending";
+const STATUS_CONFIG = {
+  FAILED: { label: "Failed", color: "badge-failed" },
+  RECOVERED: { label: "Recovered", color: "badge-recovered" },
+  SUCCESS: { label: "Success", color: "badge-success" },
+  ABANDONED: { label: "Abandoned", color: "badge-abandoned" },
+  IN_RECOVERY: { label: "In Recovery", color: "badge-in-recovery" },
+  ANALYZING: { label: "Analyzing", color: "badge-analyzing" },
+  OPEN: { label: "Open Case", color: "badge-open" },
+  RESOLVED: { label: "Resolved", color: "badge-recovered" },
+  STOPPED: { label: "Stopped", color: "badge-stopped" },
+};
 
-  if (normalized === "approved") {
-    badgeClass = "badge-approved";
-  } else if (normalized === "rejected") {
-    badgeClass = "badge-rejected";
-  } else if (normalized === "open" || normalized === "pending") {
-    badgeClass = "badge-pending";
-    label = status === "Open" ? "Open (Pending)" : "Pending";
-  }
+export default function StatusBadge({ status }) {
+  const key = (status || "").toUpperCase();
+  const conf = STATUS_CONFIG[key] || { label: status || "Unknown", color: "badge-default" };
 
   return (
-    <span className={`badge ${badgeClass}`}>
+    <span className={`badge ${conf.color}`}>
       <span className="badge-dot" />
-      {label}
+      {conf.label}
     </span>
   );
 }

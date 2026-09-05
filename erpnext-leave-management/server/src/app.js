@@ -1,89 +1,77 @@
 /**
- * app.js – Express application factory.
- * Wires up security, logging, rate-limiting, routes, and error handling.
+ * app.js — RecoverAI Core Express application.
+ * Autonomous AI Revenue Recovery API server.
  */
 
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
 
-const { CLIENT_URL, NODE_ENV } = require("./config/env");
-const errorHandler = require("./middleware/errorHandler");
-
-const employeeRoutes = require("./routes/employeeRoutes");
-const leaveRoutes = require("./routes/leaveRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
+const paymentsRoutes = require("./routes/payments");
+const analyticsRoutes = require("./routes/analytics");
+const recoveryRoutes = require("./routes/recovery");
+const auditRoutes = require("./routes/audit");
 
 const app = express();
 
-// ---------------------------------------------------------------------------
-// Security headers
-// ---------------------------------------------------------------------------
-app.use(helmet());
-
-// ---------------------------------------------------------------------------
-// CORS – only allow requests from the React dev server / deployed frontend
-// ---------------------------------------------------------------------------
 app.use(
-  cors({
-    origin: CLIENT_URL,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+  helmet({
+    contentSecurityPolicy: false,
   })
 );
 
-// ---------------------------------------------------------------------------
-// Request logging (skip in test environments)
-// ---------------------------------------------------------------------------
-if (NODE_ENV !== "test") {
-  app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+if (process.env.NODE_ENV !== "test") {
+  app.use(morgan("dev"));
 }
 
-// ---------------------------------------------------------------------------
-// Body parser
-// ---------------------------------------------------------------------------
-app.use(express.json({ limit: "10kb" }));
+// Raw body for Razorpay webhook (before express.json)
+app.use("/api/payments/webhook", express.raw({ type: "application/json" }));
 
-// ---------------------------------------------------------------------------
-// Rate limiting – global limiter to protect ERPNext from excessive calls
-// ---------------------------------------------------------------------------
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200,                  // max 200 requests per window per IP
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: "Too many requests. Please slow down." },
-});
+app.use(express.json({ limit: "1mb" }));
 
-app.use("/api", apiLimiter);
-
-// ---------------------------------------------------------------------------
-// Health check – does NOT hit ERPNext; cheap liveness probe for load balancers
-// ---------------------------------------------------------------------------
+// Health check
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, service: "ERPNext Leave Management API" });
+  const env = require("./config/env");
+  const db = require("./database/exasol");
+  res.json({
+    ok: true,
+    service: "RecoverAI — AI Revenue Recovery Agent",
+    version: "1.0.0",
+    mode: env.DEMO_MODE ? "demo" : "live",
+    database: db.getMode(),
+    razorpay: env.RAZORPAY_KEY_ID ? "configured" : "demo",
+    exasol: db.isConnected() ? "connected" : "fallback",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// ---------------------------------------------------------------------------
-// Feature routes
-// ---------------------------------------------------------------------------
-app.use("/api/employees", employeeRoutes);
-app.use("/api/leaves", leaveRoutes);
-app.use("/api/dashboard", dashboardRoutes);
+// RecoverAI Routes
+app.use("/api/payments", paymentsRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/recovery", recoveryRoutes);
+app.use("/api/audit", auditRoutes);
 
-// ---------------------------------------------------------------------------
-// 404 – unknown routes
-// ---------------------------------------------------------------------------
+// 404 fallback
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
-// ---------------------------------------------------------------------------
-// Centralized error handler (must be last middleware)
-// ---------------------------------------------------------------------------
-app.use(errorHandler);
+// Global error handler
+app.use((err, _req, res, _next) => {
+  console.error("[RecoverAI Error]", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 module.exports = app;

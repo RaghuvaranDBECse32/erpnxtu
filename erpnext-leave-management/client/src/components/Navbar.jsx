@@ -1,92 +1,175 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
-  CalendarDays,
   LayoutDashboard,
-  FilePlus2,
-  ListOrdered,
-  Users,
-  Sun,
-  Moon,
-  PlusCircle,
-  Activity,
+  CreditCard,
+  Bot,
+  BarChart3,
+  TrendingUp,
+  ScrollText,
+  Settings,
+  Database,
+  Radio,
+  Zap,
 } from "lucide-react";
+import { useApp } from "../context/AppContext";
 
-export default function Navbar({ onOpenModal, theme, onToggleTheme, serverConnected }) {
-  const location = useLocation();
-
-  const navItems = [
-    { label: "Dashboard", path: "/", icon: LayoutDashboard },
-    { label: "Leave Requests", path: "/leaves", icon: ListOrdered },
-    { label: "Apply Leave", path: "/apply", icon: FilePlus2 },
-    { label: "Employees", path: "/employees", icon: Users },
-  ];
+export default function Navbar({ mobileOpen, onCloseMobile }) {
+  const { demoMode, dbMode } = useApp();
 
   return (
-    <header className="navbar">
-      <div className="navbar-inner">
-        <Link to="/" className="brand-logo">
-          <div className="brand-icon-wrapper">
-            <CalendarDays size={22} />
-          </div>
-          <div>
-            <span>ERPNext</span>
-            <span style={{ color: "var(--primary-400)", marginLeft: "4px" }}>Leave Hub</span>
-          </div>
-          <span className="brand-badge">Frappe HR</span>
-        </Link>
-
-        <nav className="nav-links">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`nav-link ${isActive ? "active" : ""}`}
-              >
-                <Icon size={18} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="nav-actions">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              fontSize: "0.75rem",
-              color: serverConnected ? "var(--accent-emerald)" : "var(--accent-amber)",
-              background: serverConnected ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)",
-              padding: "4px 10px",
-              borderRadius: "var(--radius-full)",
-              border: `1px solid ${serverConnected ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)"}`,
-            }}
-            title={serverConnected ? "Connected to Backend API" : "Connecting to Backend API..."}
+    <aside className={`sidebar ${mobileOpen ? "mobile-open" : ""}`}>
+      {/* Brand Header */}
+      <div className="sidebar-brand-container">
+        <div className="sidebar-logo">
+          {/* Simple AI/Orbit/Recovery icon */}
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <Activity size={12} className={serverConnected ? "" : "animate-pulse"} />
-            <span>{serverConnected ? "API Online" : "Connecting"}</span>
-          </div>
-
-          <button
-            onClick={onToggleTheme}
-            className="btn-icon"
-            aria-label="Toggle theme"
-            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
-          <button onClick={onOpenModal} className="btn btn-primary">
-            <PlusCircle size={16} />
-            <span>Quick Apply</span>
-          </button>
+            <path d="M12 2v4" />
+            <path d="M12 18v4" />
+            <path d="m4.93 4.93 2.83 2.83" />
+            <path d="m16.24 16.24 2.83 2.83" />
+            <path d="M2 12h4" />
+            <path d="M18 12h4" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </div>
+        <div className="sidebar-brand-text">
+          <span className="sidebar-brand-name">
+            RecoverAI
+          </span>
+          <span className="sidebar-brand-tagline">
+            AI REVENUE RECOVERY
+          </span>
         </div>
       </div>
-    </header>
+
+      {/* Main Navigation Links */}
+      <nav className="sidebar-nav-section">
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <LayoutDashboard size={16} />
+          <span>Overview</span>
+        </NavLink>
+
+        <NavLink
+          to="/payments"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <CreditCard size={16} />
+          <span>Payments</span>
+        </NavLink>
+
+        <NavLink
+          to="/recovery"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <Bot size={16} />
+          <span>Recovery Agent</span>
+          <span className="sidebar-badge">LIVE</span>
+        </NavLink>
+
+        <NavLink
+          to="/analytics"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <BarChart3 size={16} />
+          <span>AI Analytics</span>
+        </NavLink>
+
+        <NavLink
+          to="/revenue"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <TrendingUp size={16} />
+          <span>Revenue</span>
+        </NavLink>
+
+        <NavLink
+          to="/audit"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <ScrollText size={16} />
+          <span>Audit Trail</span>
+        </NavLink>
+
+        {/* Separate Section: SYSTEM */}
+        <div className="sidebar-section-heading">SYSTEM</div>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onCloseMobile}
+        >
+          <Settings size={16} />
+          <span>Settings</span>
+        </NavLink>
+      </nav>
+
+      {/* Bottom Status Box */}
+      <div className="sidebar-footer">
+        <div className="sidebar-status-card">
+          <div
+            className="sidebar-status-item sidebar-tooltip-trigger"
+            data-tooltip="Demo Mode uses synthetic payment data. No real customer financial data is used."
+          >
+            <div className="sidebar-status-label">
+              <span className="dot-status dot-amber" />
+              <span style={{ fontWeight: 600, color: "#fff" }}>Demo Mode</span>
+            </div>
+            <span style={{ fontSize: "0.68rem", color: "var(--accent-amber-light)" }}>
+              Synthetic
+            </span>
+          </div>
+
+          <div
+            style={{
+              height: "1px",
+              background: "var(--border-subtle)",
+              margin: "2px 0",
+            }}
+          />
+
+          <div className="sidebar-status-item">
+            <div className="sidebar-status-label">
+              <Database size={13} color="var(--text-dim)" />
+              <span>Exasol Personal</span>
+            </div>
+            <div className="sidebar-status-indicator">
+              <span className="dot-status dot-green" />
+              <span style={{ color: "var(--accent-emerald-light)" }}>Connected</span>
+            </div>
+          </div>
+
+          <div className="sidebar-status-item">
+            <div className="sidebar-status-label">
+              <Zap size={13} color="var(--text-dim)" />
+              <span>Razorpay</span>
+            </div>
+            <div className="sidebar-status-indicator">
+              <span className="dot-status dot-green" />
+              <span style={{ color: "var(--accent-emerald-light)" }}>Connected</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 }

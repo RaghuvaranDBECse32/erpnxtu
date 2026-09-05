@@ -1,12 +1,13 @@
 {
-  "name": "erpnext-leave-management",
+  "name": "recoverai",
   "version": "1.0.0",
-  "description": "ERPNext Leave Management Portal – MERN monorepo",
+  "description": "RecoverAI — Autonomous AI Revenue Recovery Agent (Razorpay & Exasol Personal Hackathon)",
   "private": true,
   "scripts": {
     "dev": "npx concurrently \"npm run dev:server\" \"npm run dev:client\" --names \"API,UI\" --prefix-colors \"cyan,magenta\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
+    "start": "npm --prefix server start",
     "install:all": "npm install && npm --prefix client install && npm --prefix server install",
     "build:client": "npm --prefix client run build"
   },
