@@ -49,6 +49,9 @@ export default function Navbar({ mobileOpen, onCloseMobile }) {
           <span className="sidebar-brand-tagline">
             AI REVENUE RECOVERY
           </span>
+          <span style={{ fontSize: "0.55rem", color: "var(--primary-400)", fontWeight: 700, letterSpacing: "0.04em", marginTop: "1px", display: "block" }}>
+            RAZORPAY · EXASOL · IQOO 2026
+          </span>
         </div>
       </div>
 
@@ -166,6 +169,25 @@ export default function Navbar({ mobileOpen, onCloseMobile }) {
             <div className="sidebar-status-indicator">
               <span className="dot-status dot-green" />
               <span style={{ color: "var(--accent-emerald-light)" }}>Connected</span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              height: "1px",
+              background: "var(--border-subtle)",
+              margin: "2px 0",
+            }}
+          />
+
+          <div className="sidebar-status-item">
+            <div className="sidebar-status-label">
+              <Radio size={13} color="var(--text-dim)" />
+              <span>iQOO 2026</span>
+            </div>
+            <div className="sidebar-status-indicator">
+              <span className="dot-status dot-amber" />
+              <span style={{ color: "var(--accent-amber-light)" }}>Mobile AI</span>
             </div>
           </div>
         </div>

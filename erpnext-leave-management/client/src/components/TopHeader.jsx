@@ -39,6 +39,13 @@ export default function TopHeader({ onToggleMobileMenu }) {
       desc: "75 telemetry records indexed in columnar cache (0.4ms)",
       time: "1h ago",
     },
+    {
+      id: 4,
+      type: "info",
+      title: "iQOO Mobile AI Signal",
+      desc: "High mobile payment failure rate detected — 68% failures on Android UPI clients",
+      time: "3h ago",
+    },
   ];
 
   return (
@@ -57,7 +64,7 @@ export default function TopHeader({ onToggleMobileMenu }) {
             Revenue Recovery Command Center
           </div>
           <div className="top-header-subtitle">
-            Autonomous agent continuously monitoring payment failures and revenue leakage.
+            Autonomous AI agent · Razorpay Payments · Exasol Analytics · iQOO Mobile Intelligence
           </div>
         </div>
       </div>
