@@ -1,4 +1,4 @@
-import React from "react";
+limport React from "react";
 import { X, Sparkles, ShieldCheck, CheckCircle2, Bot } from "lucide-react";
 
 export default function ReasoningModal({ payment, reasoning, onClose }) {
